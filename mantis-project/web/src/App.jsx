@@ -218,54 +218,91 @@ const resetGame = () => {
   
 
 return (
-  <div className="h-screen w-screen grid grid-rows-[150px_1fr_150px] grid-cols-[300px_1fr_300px] bg-gradient-to-tr from-yellow-100 to-purple-100 font-sans p-4 gap-2">
-
-    {/* Top: CPU 2 */}
-    <div className="col-span-3 row-start-1 flex justify-center items-start">
-      <div className="w-fit">
-        <PlayerTank player={players[2]} 
-        onClick={() => stealTargetMode && handleSteal(2)} 
+  <div
+    className="
+      min-h-screen w-full bg-gradient-to-tr from-yellow-100 to-purple-100
+      font-sans p-4
+      flex flex-col gap-4
+      lg:grid lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[150px_1fr_150px] lg:gap-2
+    "
+  >
+    {/* ------------ CPU 1 (index 1) ------------ */}
+    <div
+      className="
+        order-1 flex justify-center
+        lg:order-none lg:row-start-2 lg:col-start-1 lg:items-center lg:transform lg:-rotate-90
+      "
+    >
+      <PlayerTank
+        player={players[1]}
+        onClick={() => stealTargetMode && handleSteal(1)}
         highlight={stealTargetMode}
-        isActive={currentPlayerIndex === 2} />
-      </div>
+        isActive={currentPlayerIndex === 1}
+      />
     </div>
 
-    {/* Left: CPU 1 */}
-    <div className="row-start-2 col-start-1 flex justify-start items-center">
-      <div className="transform -rotate-90">
-        <PlayerTank player={players[1]} 
-        onClick={() => stealTargetMode && handleSteal(1)} 
+    {/* ------------ CPU 2 (index 2) ------------ */}
+    <div
+      className="
+        order-2 flex justify-center
+        lg:order-none lg:row-start-1 lg:col-span-3
+      "
+    >
+      <PlayerTank
+        player={players[2]}
+        onClick={() => stealTargetMode && handleSteal(2)}
         highlight={stealTargetMode}
-        isActive={currentPlayerIndex === 1} />
-      </div>
+        isActive={currentPlayerIndex === 2}
+      />
     </div>
 
-    {/* Center: Deck & Actions */}
-    <div className="row-start-2 col-start-2 flex flex-col items-center justify-center gap-4 min-h-[200px]">
+    {/* ------------ CPU 3 (index 3) ------------ */}
+    <div
+      className="
+        order-3 flex justify-center
+        lg:order-none lg:row-start-2 lg:col-start-3 lg:items-center lg:transform lg:rotate-90
+      "
+    >
+      <PlayerTank
+        player={players[3]}
+        onClick={() => stealTargetMode && handleSteal(3)}
+        highlight={stealTargetMode}
+        isActive={currentPlayerIndex === 3}
+      />
+    </div>
 
-      {/* Deck Preview with Flip */}
+    {/* ------------ Card Zone + Buttons ------------ */}
+    <div
+      className="
+        order-4 flex flex-col items-center justify-center gap-4 w-full max-w-md mx-auto
+        lg:order-none lg:row-start-2 lg:col-start-2
+      "
+    >
+      {/* --- Flipping Deck Card --- */}
       <div className="relative w-20 h-28 perspective">
-        <div className={`w-full h-full transform-style-preserve-3d transition-transform duration-1000 ease-in-out ${flipping ? "rotate-y-180" : ""}`}>
-          
-          {/* BACK (3 colors) */}
+        <div
+          className={`
+            w-full h-full transform-style-preserve-3d transition-transform
+            duration-1000 ease-in-out ${flipping ? "rotate-y-180" : ""}
+          `}
+        >
+          {/* Back (3 colors) */}
           <div className="absolute inset-0 backface-hidden bg-white rounded-lg shadow p-2 flex flex-col items-center justify-center border">
-            {deck.length > 0 && (
+            {deck.length > 0 &&
               (flippingCard ? flippingCard.back : deck[deck.length - 1].back).map((c, i) => (
-                <div key={i} className="w-4 h-4 rounded-full my-[1px]" style={{ backgroundColor: c }}></div>
-              ))
-            )}
+                <div key={i} className="w-4 h-4 rounded-full my-[1px]" style={{ backgroundColor: c }} />
+              ))}
           </div>
-
-          {/* FRONT (1 color) */}
+          {/* Front (1 color) */}
           <div className="absolute inset-0 rotate-y-180 backface-hidden bg-white rounded-lg shadow flex items-center justify-center border">
             {flippingCard && (
-              <div className="w-6 h-6 rounded-full" style={{ backgroundColor: flippingCard.front }}></div>
+              <div className="w-6 h-6 rounded-full" style={{ backgroundColor: flippingCard.front }} />
             )}
           </div>
         </div>
       </div>
 
-      {/* Buttons / Messages */}
+      {/* --- Buttons & Messages --- */}
       {winner ? (
         <>
           <div className="text-xl font-bold text-green-600">{winner} wins!</div>
@@ -278,11 +315,23 @@ return (
         </>
       ) : currentPlayerIndex === 0 ? (
         <>
-          <button onClick={handleScore} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 shadow">SCORE</button>
-          <button onClick={() => setStealTargetMode(true)} className="bg-yellow-400 text-white px-4 py-2 rounded-lg hover:bg-yellow-300 shadow">STEAL</button>
+          <div className="flex gap-4 flex-wrap justify-center">
+            <button
+              onClick={handleScore}
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 shadow text-lg"
+            >
+              SCORE
+            </button>
+            <button
+              onClick={() => setStealTargetMode(true)}
+              className="bg-yellow-400 text-white px-4 py-2 rounded-lg hover:bg-yellow-300 shadow text-lg"
+            >
+              STEAL
+            </button>
+          </div>
           {stealTargetMode && (
             <div className="text-sm italic text-gray-700 mt-2">
-              Click a CPU to steal from
+              Tap a CPU to steal from
             </div>
           )}
         </>
@@ -290,44 +339,40 @@ return (
         <div className="text-sm text-gray-500 italic">CPU is thinking...</div>
       )}
 
-      {/* Log */}
+      {/* Log message */}
       {logMessage && (
         <div className="text-sm text-gray-800 mt-2 italic font-bold text-center max-w-sm">
           {logMessage}
         </div>
       )}
-    </div>
 
-    {/* Right: CPU 3 */}
-    <div className="row-start-2 col-start-3 flex justify-end items-center">
-      <div className="transform rotate-90">
-        <PlayerTank player={players[3]} 
-        onClick={() => stealTargetMode && handleSteal(3)} 
-        highlight={stealTargetMode}
-        isActive={currentPlayerIndex === 3} />
-      </div>
-    </div>
-
-    {/* Bottom left: Reset button when no winner */}
-    <div className="row-start-3 col-start-1 flex items-end justify-start">
+      {/* Always-visible reset (mobile & desktop) */}
       {!winner && (
         <button
           onClick={resetGame}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-400 shadow"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-400 shadow mt-4"
         >
           Reset Game
         </button>
       )}
     </div>
 
-    {/* Bottom center: Player */}
-    <div className="col-start-2 row-start-3 flex justify-center items-end">
-    <div className="w-fit">
-      <PlayerTank player={players[0]} isActive={currentPlayerIndex === 0} />
-      </div>
+    {/* ------------ Player 1 ------------ */}
+    <div
+      className="
+        order-5 w-full max-w-md mx-auto
+        lg:order-none lg:row-start-3 lg:col-start-2
+      "
+    >
+      <PlayerTank
+        player={players[0]}
+        isActive={currentPlayerIndex === 0}
+      />
     </div>
   </div>
 );
+
+
 
 
 }
